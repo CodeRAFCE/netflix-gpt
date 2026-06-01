@@ -1,0 +1,9 @@
+@import "tailwindcss";
+
+@theme {
+  --color-primary: #e50914; /* Netflix red */
+  --color-background: #141414; /* Netflix dark */
+  --font-sans: "Inter", sans-serif;
+
+  --spacing-18: 4.5rem; /* custom spacing */
+}

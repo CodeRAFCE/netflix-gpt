@@ -1,8 +1,10 @@
+import { useRef, useState } from "react";
 import { Link } from "react-router";
+import { signIn, signUp } from "../../../services/auth.service";
 import Button from "../../../components/ui/Button";
 import TextField from "../../../components/forms/TextField";
-import { useRef, useState } from "react";
 import checkValidation from "../../../utils/validation";
+import useAsync from "../../../hooks/useAsync";
 
 const AuthForm = () => {
   const [isSignUp, setIsSignUp] = useState(false);
@@ -11,21 +13,32 @@ const AuthForm = () => {
   const passwordRef = useRef<HTMLInputElement | null>(null);
   const fullNameRef = useRef<HTMLInputElement | null>(null);
 
+  const { error, loading, run } = useAsync();
+
   const handleFormChange = () => {
     setIsSignUp((prev) => !prev);
   };
 
-  const handleSubmit = (e: React.SyntheticEvent<HTMLFormElement>) => {
+  const handleSubmit = async (e: React.SyntheticEvent<HTMLFormElement>) => {
     e.preventDefault(); // Prevent default form submission behavior (Prevent Reloading Browser)
     // Handle form submission logic here
     const email = emailRef.current?.value || "";
     const password = passwordRef.current?.value || "";
-    const fullName = isSignUp ? fullNameRef.current?.value || "" : "";
+    const fullName = isSignUp ? fullNameRef.current?.value || "" : undefined;
+    const form = e.currentTarget;
 
     const messages = checkValidation(email, password, fullName);
-    console.log("Form submitted with:", { email, password, fullName });
-    console.log("Validation messages:", messages);
     setErrors(messages);
+
+    if (Object.keys(messages).length === 0 && isSignUp) {
+      // No validation errors, proceed with form submission (e.g., API call)
+      await run(() => signUp({ email, password, fullName }));
+      setIsSignUp(true);
+      form.reset();
+    } else {
+      await run(() => signIn({ email, password }));
+      form.reset();
+    }
   };
 
   return (
@@ -37,6 +50,10 @@ const AuthForm = () => {
       <h2 className="text-3xl font-bold mb-6 text-center text-white">
         {isSignUp ? "Sign Up" : "Sign In"}
       </h2>
+      {error && (
+        <div className="text-red-500 text-center mb-4">😡{error}‼️</div>
+      )}
+
       {isSignUp && (
         <TextField
           name="fullName"
@@ -76,7 +93,9 @@ const AuthForm = () => {
           </label>
         </div>
       )}
-      <Button type="submit">{isSignUp ? "Sign Up" : "Sign In"}</Button>
+      <Button type="submit" isLoading={loading} disabled={loading}>
+        {isSignUp ? "Sign Up" : "Sign In"}
+      </Button>
       <div className="mt-4 text-center text-gray-400">
         Don't have an account?{" "}
         <Link

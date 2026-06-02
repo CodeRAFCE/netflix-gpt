@@ -18,7 +18,7 @@ export const validateFullName = (fullName: string) =>
 const checkValidation: ValidationFunction = (email, password, fullName) => {
   const isEmailValid = validateEmail(email);
   const isPasswordValid = validatePassword(password);
-  const isFullNameValid = fullName != null ? validateFullName(fullName) : true;
+  const isFullNameValid = fullName ? validateFullName(fullName) : true;
 
   const errors: Record<string, string> = {};
 

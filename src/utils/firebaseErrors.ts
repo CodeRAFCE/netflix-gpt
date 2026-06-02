@@ -1,4 +1,4 @@
-const  = (code: string) => {
+const getAuthErrorMessage = (code: string) => {
   switch (code) {
     case "auth/email-already-in-use":
       return "This email is already registered.";
@@ -8,6 +8,7 @@ const  = (code: string) => {
       return "Password must be at least 6 characters.";
     case "auth/invalid-credential":
       return "Incorrect email or password.";
+
     default:
       return "Something went wrong. Please try again.";
   }

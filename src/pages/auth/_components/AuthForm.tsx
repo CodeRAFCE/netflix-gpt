@@ -6,8 +6,11 @@ import TextField from "../../../components/forms/TextField";
 import checkValidation from "../../../utils/validation";
 import useAsync from "../../../hooks/useAsync";
 
-const AuthForm = () => {
-  const [isSignUp, setIsSignUp] = useState(false);
+interface AuthFormProps {
+  isSignUp: boolean;
+}
+
+const AuthForm = ({ isSignUp }: AuthFormProps) => {
   const [errors, setErrors] = useState<Record<string, string>>({});
   const emailRef = useRef<HTMLInputElement | null>(null);
   const passwordRef = useRef<HTMLInputElement | null>(null);
@@ -15,13 +18,8 @@ const AuthForm = () => {
 
   const { error, loading, run } = useAsync();
 
-  const handleFormChange = () => {
-    setIsSignUp((prev) => !prev);
-  };
-
   const handleSubmit = async (e: React.SyntheticEvent<HTMLFormElement>) => {
     e.preventDefault(); // Prevent default form submission behavior (Prevent Reloading Browser)
-    // Handle form submission logic here
     const email = emailRef.current?.value || "";
     const password = passwordRef.current?.value || "";
     const fullName = isSignUp ? fullNameRef.current?.value || "" : undefined;
@@ -30,14 +28,14 @@ const AuthForm = () => {
     const messages = checkValidation(email, password, fullName);
     setErrors(messages);
 
-    if (Object.keys(messages).length === 0 && isSignUp) {
+    if (Object.keys(messages).length === 0) {
       // No validation errors, proceed with form submission (e.g., API call)
-      await run(() => signUp({ email, password, fullName }));
-      setIsSignUp(true);
-      form.reset();
-    } else {
-      await run(() => signIn({ email, password }));
-      form.reset();
+
+      const ok = isSignUp
+        ? await run(() => signUp({ email, password, fullName }))
+        : await run(() => signIn({ email, password }));
+
+      if (ok) form.reset();
     }
   };
 
@@ -97,13 +95,12 @@ const AuthForm = () => {
         {isSignUp ? "Sign Up" : "Sign In"}
       </Button>
       <div className="mt-4 text-center text-gray-400">
-        Don't have an account?{" "}
+        {isSignUp ? "Already have an account? " : "Don't have an account? "}
         <Link
-          to="#"
+          to={isSignUp ? "/sign-in" : "/sign-up"}
           className="text-white hover:underline"
-          onClick={handleFormChange}
         >
-          Sign Up
+          {!isSignUp ? "Sign Up" : "Sign In"}
         </Link>
       </div>
     </form>

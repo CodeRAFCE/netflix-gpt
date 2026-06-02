@@ -1,12 +1,8 @@
-import type { ReactNode } from "react";
 import Header from "../../components/navigation/Header";
 import { NETFLIX_BG_URL } from "../../utils/constant";
+import { Outlet } from "react-router";
 
-interface Props {
-  children: ReactNode;
-}
-
-const AuthLayout = ({ children }: Props) => {
+const AuthLayout = () => {
   return (
     <div className="relative min-h-screen bg-black">
       <img
@@ -17,7 +13,7 @@ const AuthLayout = ({ children }: Props) => {
       <div className="relative z-10 flex flex-col min-h-screen">
         <Header />
         <main className="flex flex-1 items-center justify-center">
-          {children}
+          <Outlet />
         </main>
       </div>
     </div>

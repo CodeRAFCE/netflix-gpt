@@ -8,7 +8,8 @@ const useAsync = () => {
     setLoading(true);
     setError(null);
     try {
-      await asyncFn();
+      const result = await asyncFn();
+      return result;
     } catch (error) {
       if (error instanceof Error) setError(error.message);
       else setError("Something went wrong.");

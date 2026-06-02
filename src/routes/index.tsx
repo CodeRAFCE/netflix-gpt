@@ -1,5 +1,5 @@
 import { createBrowserRouter } from "react-router";
-import SignIn from "../pages/auth/SignIn";
+import SignIn from "../pages/auth/Auth";
 import Browse from "../pages/browse/Browse";
 
 const router = createBrowserRouter([

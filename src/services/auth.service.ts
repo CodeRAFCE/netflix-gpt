@@ -8,6 +8,7 @@ import {
 } from "firebase/auth";
 import { auth } from "../utils/firebase";
 import getAuthErrorMessage from "../utils/firebaseErrors";
+import { AVATAR_URL } from "../utils/constant";
 
 interface SignInData {
   email: string;
@@ -28,7 +29,10 @@ export const signUp = async (data: SignUpData) => {
     );
 
     // Update user profile with full name
-    await updateProfile(userCredential.user, { displayName: fullName });
+    await updateProfile(userCredential.user, {
+      displayName: fullName,
+      photoURL: AVATAR_URL,
+    });
     return userCredential;
   } catch (error) {
     if (error instanceof FirebaseError)

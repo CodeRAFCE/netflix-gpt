@@ -3,6 +3,7 @@ import { useDispatch } from "react-redux";
 import { Outlet, useNavigate } from "react-router";
 import { onUserStateChange } from "../../services/auth.service";
 import { addUser, removeUser } from "../../store/slices/userSlice";
+import Header from "../navigation/Header";
 
 const RootLayout = () => {
   const dispatch = useDispatch();
@@ -19,13 +20,18 @@ const RootLayout = () => {
         navigate("/browse");
       } else {
         dispatch(removeUser());
-        navigate("/");
+        navigate("/sign-in");
       }
     });
 
     return () => unsubscribe();
   }, []);
-  return <Outlet />;
+  return (
+    <>
+      <Header />
+      <Outlet />
+    </>
+  );
 };
 
 export default RootLayout;
